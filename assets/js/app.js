@@ -41,6 +41,10 @@ hooks.chart = {
             // Configuration options go here
             options: {}
         });
+        this.handleEvent("points", ({points}) => {
+            chart.data.datasets[0].data = points
+            chart.update()
+        })
     }
 }
 
