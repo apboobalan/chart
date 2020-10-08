@@ -91,3 +91,49 @@ defmodule ChartWeb.PageLive do
   defp get_points, do: 1..7 |> Enum.map(fn _ -> :rand.uniform(100) end)
 end
 ```
+
+- If we add another interaction, it breaks.
+
+```elixir
+  @impl true
+  def mount(_params, _session, socket) do
+    schedule_update()
+    {:ok, socket |> assign(count: 0)}
+  end
+
+  @impl true
+  def handle_event("increment", _, socket) do
+    {:noreply, socket |> update(:count, &(&1 + 1))}
+  end
+```
+
+```html
+<h2><%= @count %></h2>
+<button phx-click="increment">INCR</button>
+```
+
+- To fix this, enclose it with phx-update="ignore" container
+
+```html
+<div phx-update="ignore">
+  <canvas id="myChart" phx-hook="chart"></canvas>
+</div>
+```
+
+- To combine button and chart
+
+```elixir
+  @impl true
+  def mount(_params, _session, socket) do
+    {:ok, socket}
+  end
+
+  @impl true
+  def handle_event("next", _, socket) do
+    {:noreply, socket |> push_event("points", %{points: get_points()})}
+  end
+```
+
+```html
+<button phx-click="next">NEXT RANDOM CHART</button>
+```
