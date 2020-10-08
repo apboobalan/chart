@@ -3,21 +3,13 @@ defmodule ChartWeb.PageLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    schedule_update()
-    {:ok, socket |> assign(count: 0)}
+    {:ok, socket}
   end
 
   @impl true
-  def handle_event("increment", _, socket) do
-    {:noreply, socket |> update(:count, &(&1 + 1))}
-  end
-
-  @impl true
-  def handle_info(:update, socket) do
-    schedule_update()
+  def handle_event("next", _, socket) do
     {:noreply, socket |> push_event("points", %{points: get_points()})}
   end
 
-  defp schedule_update, do: self() |> Process.send_after(:update, 2000)
   defp get_points, do: 1..7 |> Enum.map(fn _ -> :rand.uniform(100) end)
 end
