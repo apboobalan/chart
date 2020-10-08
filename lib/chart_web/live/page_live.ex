@@ -4,7 +4,12 @@ defmodule ChartWeb.PageLive do
   @impl true
   def mount(_params, _session, socket) do
     schedule_update()
-    {:ok, socket}
+    {:ok, socket |> assign(count: 0)}
+  end
+
+  @impl true
+  def handle_event("increment", _, socket) do
+    {:noreply, socket |> update(:count, &(&1 + 1))}
   end
 
   @impl true
